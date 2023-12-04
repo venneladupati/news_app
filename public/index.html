@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Map</title>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVuZ0tnyCoTVyfzyTCq7X4N78Lt-0IJ4M&callback=initMap"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 2
+            });
+
+            // Add a click event listener to the map
+            google.maps.event.addListener(map, 'click', function(event) {
+                const clickedLocation = event.latLng;
+                // Fetch news based on the clicked coordinates
+                fetchNews(clickedLocation.lat(), clickedLocation.lng());
+            });
+        }
+
+        function fetchNews(latitude, longitude) {
+            const apiKey = '0bbcc762b3334567b4f5dc90666b9b5e';  
+            const apiUrl = `https://newsapi.org/v2/top-headlines?lat=${latitude}&lon=${longitude}&apiKey=${apiKey}`;
+
+            // Make an AJAX request to the News API
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                success: function(data) {
+                    // Handle the response data 
+                    displayNews(data.articles);
+                },
+                error: function(error) {
+                    console.error('Error fetching news:', error);
+                }
+            });
+        }
+
+        function displayNews(articles) {
+            // Display the news articles 
+            alert('Top News Headlines:\n\n' + articles.map(article => article.title).join('\n'));
+        }
+    </script>
+</body>
+</html>
